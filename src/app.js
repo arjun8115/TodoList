@@ -45,11 +45,13 @@ App = {
     loadAccount: async () => {
         // Set the current blockchain account
         App.account = web3.eth.accounts[0]
+        //console.log(App.account)
     },
 
     loadContract: async () => {
         // Create a JavaScript version of the smart contract
         const todoList = await $.getJSON('TodoList.json')
+        //console.log(todoList)
         App.contracts.TodoList = TruffleContract(todoList)
         App.contracts.TodoList.setProvider(App.web3Provider)
 
@@ -80,6 +82,7 @@ App = {
         // Load the total task count from the blockchain
         const taskCount = await App.todoList.taskCount()
         const $taskTemplate = $('.taskTemplate')
+        //console.log(taskCount.toNumber())
 
         // Render out each task with a new task template
         for (var i = 1; i <= taskCount; i++) {
@@ -88,6 +91,7 @@ App = {
             const taskId = task[0].toNumber()
             const taskContent = task[1]
             const taskCompleted = task[2]
+            
 
             // Create the html for the task
             const $newTaskTemplate = $taskTemplate.clone()
@@ -95,7 +99,7 @@ App = {
             $newTaskTemplate.find('input')
                 .prop('name', taskId)
                 .prop('checked', taskCompleted)
-            // .on('click', App.toggleCompleted)
+                .on('click', App.toggleCompleted)
 
             // Put the task in the correct list
             if (taskCompleted) {
@@ -107,6 +111,20 @@ App = {
             // Show the task
             $newTaskTemplate.show()
         }
+    },
+
+    createTask: async () => {
+        App.setLoading(true)
+        const content = $('#newTask').val()
+        await App.todoList.createTask(content)
+        window.location.reload()
+    },
+
+    toggleCompleted: async (e) => {
+        App.setLoading(true)
+        const taskId = e.target.name
+        await App.todoList.toggleCompleted(taskId)
+        window.location.reload()
     },
 
     setLoading: (boolean) => {

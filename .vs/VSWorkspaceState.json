@@ -3,8 +3,9 @@
     "",
     "\\contracts",
     "\\migrations",
-    "\\src"
+    "\\src",
+    "\\test"
   ],
-  "SelectedNode": "\\bs-config.json",
+  "SelectedNode": "\\src\\app.js",
   "PreviewInSolutionExplorer": false
 }
